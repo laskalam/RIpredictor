@@ -6,3 +6,4 @@ tensorflow-cpu
 scikit-image==0.19.2
 htbuilder==0.6.0
 streamlit==1.7.0
+matplotlib==3.5.1
