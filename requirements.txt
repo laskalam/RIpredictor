@@ -5,4 +5,4 @@ torch==1.10.1
 tensorflow-cpu
 scikit-image==0.19.2
 htbuilder==0.6.0
-streamlit==1.7.0s
+streamlit==1.7.0
