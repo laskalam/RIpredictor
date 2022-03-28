@@ -6,7 +6,7 @@ import streamlit as st
 from base64 import b64encode
 from datetime import datetime, date, time
 import io
-from functions import (xception, vgg, tensor, float32,
+from functions import (xception, vgg, tensor, float32, no_grad,
                        F, image_prediction, image_prediction_2)
 from footer import footer
 from netCDF4 import Dataset
@@ -87,8 +87,10 @@ def vgg_predict(image):
     net = getVgg()
     image = np.repeat(image[np.newaxis,np.newaxis,:], 2, axis=0)
     image = tensor(image, dtype=float32)
-    output = F.softmax(net(image), dim=-1)
-    return float(output[0][1])
+    with no_grad():
+        output = F.softmax(net(image), dim=-1)
+        output = output.cpu().numpy()
+    return output[0][1]
 
 
 #@st.cache(ttl=86400)

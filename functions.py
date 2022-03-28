@@ -6,7 +6,7 @@ from xception_model import ModelFactory
 from vgg_model import model
 import matplotlib.pyplot as plt
 import torch
-from torch import tensor, float32
+from torch import tensor, float32, no_grad
 import torch.nn.functional as F
 
 
@@ -137,4 +137,5 @@ def vgg():
     net = model()
     net.to(device)
     net.load_state_dict(torch.load(model_weights_file, map_location=device))
+    net = net.eval()
     return net
