@@ -131,16 +131,17 @@ with st.form(key='form0'):
                 "The input required for the prediction is an IR temperature 2D map. The input file should be in a netcdf format with \n"
                 "the variable name **IRWIN**. The input shape can be of the following format: MxN, 1xMxN or MxNx1 where M and N are \n"
                 "preferably close. If M and N are very different, the processed image will be distorted. The map should include all of \n"
-                "the tropical cyclone IR temperature feature, about 20x20deg^2 was used during the training of the models. \n"
-                "We present 2 predictions from 2 DNN different models."
+                r"the tropical cyclone IR temperature feature, about $20\times20~\mathrm{deg}^2$ was used during the training of the models."
+                "  \n We present 2 predictions from 2 DNN different models."
                 )
+    st.write("You can download a data sample [here](https://www.dropbox.com/sh/h33g391kk8xalbd/AABefWFa13mfvHuMkDekYqbHa?dl=1).")
     a0, a1 = st.columns((8, 2))
     uploaded_file = a0.file_uploader("Choose a file")
     variable_name = a1.text_input("Variable Name (case sensitive)", value="IRWIN")
     if variable_name.strip()=='' or variable_name==None:
         variable_name='IRWIN'
     _ , t, _ = st.columns((4,1,4))
-    submit_button = t.form_submit_button(label='submit')
+    submit_button = t.form_submit_button(label='Predict')
     
     #make a nice progress bar
     long_task_progress = st.empty()
