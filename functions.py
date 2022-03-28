@@ -35,7 +35,7 @@ def image_prediction_2(prob, file_name):
                                               colors=mycolors, autopct='%1.1f%%', shadow=True
                                              )
     plt.setp(autotexts, size = 16, color='white', weight ="bold")
-    plt.setp(texts, size=16, fontweight=600)
+    plt.setp(texts, size=24, fontweight=600)
     for i, patch in enumerate(wedges):
         texts[i].set_color(patch.get_facecolor())
     #----
@@ -46,7 +46,7 @@ def image_prediction_2(prob, file_name):
                                               colors=mycolors, autopct='%1.1f%%', shadow=True
                                              )
     plt.setp(autotexts, size = 16, color='white', weight ="bold")
-    plt.setp(texts, size=16, fontweight=600)
+    plt.setp(texts, size=24, fontweight=600)
     for i, patch in enumerate(wedges):
         texts[i].set_color(patch.get_facecolor())
     #----

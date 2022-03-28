@@ -127,12 +127,12 @@ with st.form(key='form0'):
 
 
 
-    st.markdown("This tool can be used to predict if there will be a rapid intensification of the tropical cyclone in the next 24h or not. \n"
+    st.markdown("This tool can be used to predict if there will be a rapid intensification of the tropical cyclone or not in the next 24h. \n"
                 "The input required for the prediction is an IR temperature 2D map. The input file should be in a netcdf format with \n"
-                "the variable name **IRWIN**. The input shape can be of the following format: MxN, 1xMxN or MxNx1 where M and N are \n"
+                "the variable name **IRWIN**. The input shape can be any of the following formats: MxN, 1xMxN or MxNx1 where M and N are \n"
                 "preferably close. If M and N are very different, the processed image will be distorted. The map should include all of \n"
                 r"the tropical cyclone IR temperature feature, about $20\times20~\mathrm{deg}^2$ around the eye was used during the training of the models."
-                "  \n We present 2 predictions from 2 DNN different models."
+                "  \n We present two predictions from two different DNN models."
                 )
     st.write("You can download a data sample [here](https://www.dropbox.com/sh/h33g391kk8xalbd/AABefWFa13mfvHuMkDekYqbHa?dl=1).")
     a0, a1 = st.columns((8, 2))
