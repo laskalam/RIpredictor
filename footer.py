@@ -76,7 +76,7 @@ def footer():
         br(),
         link(st.secrets["email_haga"], "Sambatra Andrianomena"),
         ', ',
-        link(st.secrets["email_holy"], "Holifidy Rapanoel"),
+        "Holifidy Rapanoel",
         ' and ',
         link(st.secrets["email_rondro"], "Rondrotiana Barimalala"),
         " contributed in the development of the models",

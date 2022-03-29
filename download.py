@@ -10,11 +10,11 @@ vgg_model_file       = secrets['vgg_file']
 def download_requirements() -> None:
     """Download all required documents/data here"""
     try:
-        if not os.path.exists('./vgg_weights.pt'):
+        if not os.path.exists('./vgg_weights.h5'):
             u = urlopen(vgg_weight_file)
             data = u.read()
             u.close()
-            with open('vgg_weights.pt', 'wb') as f:
+            with open('vgg_weights.h5', 'wb') as f:
                 f.write(data)
         
         if not os.path.exists('./xception_weights.h5'):

@@ -3,7 +3,7 @@ import numpy as np
 from download import download_requirements
 download_requirements()
 from xception_model import ModelFactory
-from vgg_model import model
+from vgg_model import ModelVGG as model
 import matplotlib.pyplot as plt
 import torch
 from torch import tensor, float32, no_grad
@@ -14,7 +14,6 @@ os.environ["CUDA_VISIBLE_DEVICES"]="0"
 nd = 1
 num_classes = 2
 
-
 def image_prediction_2(prob, file_name):
     """Create the image showing the RI probability from the 2 models
     """
@@ -24,45 +23,59 @@ def image_prediction_2(prob, file_name):
     font1 = {'family' : 'normal',
             'weight' : 'normal',
             'size'   : 15}
+    size = 0.2
+    outersize = 0.8
+    classes = ['RI', 'non-RI']
+    mycolors = ['red', 'green']
+    fig, axes = plt.subplots(2,1,figsize=(10,10))
 
-    fig, axes = plt.subplots(2,2,figsize=(10,10))
     #----
     y = [prob[0], 1-prob[0]]
-    mylabels = ['RI', 'non-RI']
-    mycolors = ['red', 'green']
-    myexplode = [0.2, 0]
-    wedges, texts, autotexts = axes[0, 1].pie(y, labels = mylabels, explode = myexplode, 
-                                              colors=mycolors, autopct='%1.1f%%', shadow=True
+    argmax = np.argmax(y)
+    mylabels = [f'{100*_y:1.1f}% {c}' for _y, c in zip(y, classes)]
+    wedges, texts = axes[0].pie(y, radius=outersize, labels = mylabels,
+                                              wedgeprops=dict(width=size, edgecolor='w'),
+                                              colors=mycolors
+
                                              )
-    plt.setp(autotexts, size = 16, color='white', weight ="bold")
     plt.setp(texts, size=24, fontweight=600)
     for i, patch in enumerate(wedges):
         texts[i].set_color(patch.get_facecolor())
+    axes[0].add_patch(plt.Circle((0, 0), outersize-1.1*size, color=mycolors[argmax], alpha=0.7))
+    axes[0].text(0.5, 0.5, classes[np.argmax(y)],
+                   color='white', weight ="bold", size=32,
+                   va='center', ha='center', transform=axes[0].transAxes)
     #----
     y = [prob[1], 1-prob[1]]
-    mylabels = ['RI', 'non-RI']
-    myexplode = [0.2, 0]
-    wedges, texts, autotexts = axes[1,1].pie(y, labels = mylabels, explode = myexplode, 
-                                              colors=mycolors, autopct='%1.1f%%', shadow=True
+    argmax = np.argmax(y)
+    mylabels = [f'{100*_y:1.1f}% {c}' for _y, c in zip(y, classes)]
+    wedges, texts = axes[1].pie(y, radius=outersize, labels = mylabels,
+                                              wedgeprops=dict(width=size, edgecolor='w'),
+                                              colors=mycolors
+
                                              )
-    plt.setp(autotexts, size = 16, color='white', weight ="bold")
     plt.setp(texts, size=24, fontweight=600)
     for i, patch in enumerate(wedges):
         texts[i].set_color(patch.get_facecolor())
+    axes[1].add_patch(plt.Circle((0, 0), outersize-1.1*size, color=mycolors[argmax], alpha=0.7))
+    axes[1].text(0.5, 0.5, classes[np.argmax(y)],
+                   color='white', weight ="bold", size=32,
+                   va='center', ha='center', transform=axes[1].transAxes)
     #----
 
 
-    axes[0,0].text(0.5, 0.5, 'Model 1', fontdict=font, horizontalalignment='center',
-                verticalalignment='center', transform=axes[0,0].transAxes)
-    axes[1,0].text(0.5, 0.5, 'Model 2', fontdict=font, horizontalalignment='center',
-                verticalalignment='center', transform=axes[1,0].transAxes)
+    axes[0].set_title('Model 1 prediction', fontdict=font, horizontalalignment='center',
+                verticalalignment='center', transform=axes[0].transAxes)
+    axes[1].set_title('Model 2 prediction', fontdict=font, horizontalalignment='center',
+                verticalalignment='center', transform=axes[1].transAxes)
 
-    axes[0,0].axis('off')
-    axes[1,0].axis('off')
+    axes[0].axis('off')
+    axes[1].axis('off')
 
-    plt.savefig(file_name, bbox_inches='tight', dpi=500)
+    plt.savefig(file_name, dpi=360)#bbox_inches='tight', dpi=500)
 
     return 
+
 
 def image_prediction(prob, file_name):
     """Create the image showing the RI probability from one model"""
@@ -132,10 +145,7 @@ def xception():
 
 def vgg():
     """Load the vgg model with the trained weights."""
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    model_weights_file = './vgg_weights.pt'
-    net = model()
-    net.to(device)
-    net.load_state_dict(torch.load(model_weights_file, map_location=device))
-    net = net.eval()
+    model_weights_file = './vgg_weights.h5'
+    net = model(0.1)
+    net.load_weights(model_weights_file)
     return net

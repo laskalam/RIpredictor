@@ -85,12 +85,9 @@ def getVgg():
 
 def vgg_predict(image):
     net = getVgg()
-    image = np.repeat(image[np.newaxis,np.newaxis,:], 2, axis=0)
-    image = tensor(image, dtype=float32)
-    with no_grad():
-        output = F.softmax(net(image), dim=-1)
-        output = output.cpu().numpy()
-    return output[0][1]
+    image = image[np.newaxis, :, np.newaxis]
+    output = net.predict(image)
+    return output[0]
 
 
 #@st.cache(ttl=86400)
@@ -134,7 +131,7 @@ with st.form(key='form0'):
                 r"the tropical cyclone IR temperature feature, about $20\times20~\mathrm{deg}^2$ around the eye was used during the training of the models."
                 "  \n We present two predictions from two different DNN models."
                 )
-    st.write("You can download a data sample [here](https://www.dropbox.com/sh/h33g391kk8xalbd/AABefWFa13mfvHuMkDekYqbHa?dl=1).")
+    st.write("You can download a data sample [here](https://www.dropbox.com/sh/h33g391kk8xalbd/AABefWFa13mfvHuMkDekYqbHa?dl=1). **unzip** to extract the data.")
     a0, a1 = st.columns((8, 2))
     uploaded_file = a0.file_uploader("Choose a file")
     variable_name = a1.text_input("Variable Name (case sensitive)", value="IRWIN")
@@ -167,16 +164,17 @@ with st.form(key='form0'):
         with c1:
             _ = long_task_progress.progress(0)
             # get the model and preprocess the input
-            model, preprocess_input, input_size, _ = getXception()
-            X = convert_image(image)
-            X = preprocess_input(X)
+            _xception, preprocess_input, input_size, _ = getXception()
+            _vgg = getVgg()
+            shaped_image = convert_image(image)
+            X = preprocess_input(shaped_image)
             _ = long_task_progress.progress(2)
             X = np.expand_dims(np.average(X, axis=-1), axis=-1)
             X = np.expand_dims(X, axis=0)
             _ = long_task_progress.progress(30)
-            prediction = model.predict(X)
-            image_ = convert_image(image)[:,:,0]
-            vgg_prediction = vgg_predict(image_)
+            # get RI probabilities
+            xception_prediction = _xception.predict(X)[0][0]
+            vgg_prediction = _vgg.predict(shaped_image[np.newaxis, :, :, :1])[0][1]
             _ = long_task_progress.progress(90)
             
             #plot the processed image
@@ -188,7 +186,9 @@ with st.form(key='form0'):
             c1.image('x.png', use_column_width=True)
             os.remove('x.png')
             c2.header("24h-prediction")
-            probability = prediction[0][0]
-            image_prediction_2([probability, vgg_prediction], 'x.png')
+            image_prediction_2([xception_prediction, vgg_prediction], 'x.png')
+            #image_prediction(probability, 'x.png')
             c2.image('x.png', use_column_width=True)
             os.remove('x.png')
+st.write("If our work inspires you to advance in your research, please cite our preprint paper [here](https://eartharxiv.org/repository/view/2195/).")
+st.write("If you are interested in our source code, please find them [here](https://github.com/laskalam/RIpredictor).")
