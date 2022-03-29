@@ -6,8 +6,7 @@ import streamlit as st
 from base64 import b64encode
 from datetime import datetime, date, time
 import io
-from functions import (xception, vgg, tensor, float32, no_grad,
-                       F, image_prediction, image_prediction_2)
+from functions import xception, vgg, image_prediction_2
 from footer import footer
 from netCDF4 import Dataset
 from combine_images import convert_image

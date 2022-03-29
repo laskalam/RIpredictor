@@ -5,9 +5,6 @@ download_requirements()
 from xception_model import ModelFactory
 from vgg_model import ModelVGG as model
 import matplotlib.pyplot as plt
-import torch
-from torch import tensor, float32, no_grad
-import torch.nn.functional as F
 
 
 os.environ["CUDA_VISIBLE_DEVICES"]="0"
@@ -17,7 +14,7 @@ num_classes = 2
 def image_prediction_2(prob, file_name):
     """Create the image showing the RI probability from the 2 models
     """
-    font = {'family' : 'normal',
+    font = {'family' : 'DejaVu Sans',
             'weight' : 'bold',
             'size'   : 22}
     font1 = {'family' : 'normal',
@@ -34,17 +31,16 @@ def image_prediction_2(prob, file_name):
     argmax = np.argmax(y)
     mylabels = [f'{100*_y:1.1f}% {c}' for _y, c in zip(y, classes)]
     wedges, texts = axes[0].pie(y, radius=outersize, labels = mylabels,
-                                              wedgeprops=dict(width=size, edgecolor='w'),
-                                              colors=mycolors
-
+                                wedgeprops=dict(width=size, edgecolor='w'),
+                                colors=mycolors
                                              )
     plt.setp(texts, size=24, fontweight=600)
     for i, patch in enumerate(wedges):
         texts[i].set_color(patch.get_facecolor())
     axes[0].add_patch(plt.Circle((0, 0), outersize-1.1*size, color=mycolors[argmax], alpha=0.7))
     axes[0].text(0.5, 0.5, classes[np.argmax(y)],
-                   color='white', weight ="bold", size=32,
-                   va='center', ha='center', transform=axes[0].transAxes)
+                 color='white', weight ="bold", size=32,
+                 va='center', ha='center', transform=axes[0].transAxes)
     #----
     y = [prob[1], 1-prob[1]]
     argmax = np.argmax(y)
