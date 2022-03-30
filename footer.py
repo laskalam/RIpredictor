@@ -78,7 +78,7 @@ def footer():
         ', ',
         "Holifidy Rapanoel",
         ' and ',
-        link(st.secrets["email_rondro"], "Rondrotiana Barimalala"),
+        "Rondrotiana Barimalala",
         " contributed in the development of the models",
     ]
     layout(*myargs)
